@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ClientForm = () => {
   const [cliente, setcliente] = useState({
-    numero_documento: '',
+    numeroDocumento: '',
     nombre: '',
     apellidos: '',
-    fecha_nacimiento: '',
+    fechaNacimiento: '',
     ciudad: '',
     correo_electronico: '',
     telefono: '',
-    ocupacion: '',
+    ocupacion: 'Empleado',
+    estado: '',
   });
-  const [isValid, setIsValid] = useState(false);
+  // const [isValid, setIsValid] = useState(false);
   const [message, setMessage] = useState('');
+  const [shouldSubmit, setShouldSubmit] = useState(false);  
   const handleChange = (e) => {
     setcliente({
       ...cliente,
@@ -20,111 +22,137 @@ const ClientForm = () => {
     });
   };
 
- 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const fechaNacimiento = parseInt(cliente.fecha_nacimiento, 10);
+  const calcularEdad = (fechaNacimiento) => {
 
-    if (fechaNacimiento >= 18 && fechaNacimiento <= 65) {
-      setIsValid(true);
+    return fechaNacimiento >= 18 && fechaNacimiento <= 65;
+  };
+  useEffect(() => {
+    if (shouldSubmit) {
       fetch('http://localhost:8080/api/clientes', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(cliente)
+        body: JSON.stringify(cliente),
       })
-        .then(response => response.json())
-        .then(result => {
+        .then((response) => response.json())
+        .then((result) => {
           if (result.success) {
             setMessage('Cliente guardado exitosamente.');
           } else {
             setMessage(`Error: ${result.message}`);
           }
         })
-        .catch(error => {
+        .catch(() => {
           setMessage('Error al conectar con el servidor.');
         });
-    } else {
-      setIsValid(false);
-      setMessage('El cliente no está en edad productiva (18-65 años).');
+      setShouldSubmit(false); // Reset the submit flag
     }
+  }, [shouldSubmit, cliente]);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const edad = calcularEdad(cliente.fecha_nacimiento);
+    console.log("Edad calculada:", edad); // Añadido para depuración
+
+    const estado = (edad >= 18 && edad <= 65) ? 'no viable' : 'viable';
+    console.log("Estado calculado:", estado); // Añadido para depuración
+
+    setCliente((prevCliente) => ({
+      ...prevCliente,
+      estado,
+    }));
+    setShouldSubmit(true);
   };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const edad = calcularEdad(cliente.fecha_nacimiento);
+
+  //   if (edad >= 18 && edad <= 65) {
+  //     cliente.estado = 'viable';
+  //   } else {
+  //     cliente.estado = 'no viable';
+  //   }
+
+  //   fetch('http://localhost:8080/api/clientes', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(cliente),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       if (result.success) {
+  //         setMessage('Cliente guardado exitosamente.');
+  //       } else {
+  //         setMessage(`Error: ${result.message}`);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setMessage('Error al conectar con el servidor.');
+  //     });
+
+  // };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>Number of Document</label>
-        <input
-          type="text"
-          name="numero_documento"
-          value={cliente.numero_documento}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>First Name</label>
-        <input
-          type="text"
-          name="nombre"
-          value={cliente.nombre}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Last Name</label>
-        <input
-          type="text"
-          name="apellidos"
-          value={cliente.apellidos}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Age</label>
-        <input
-          type="number"
-          name="fecha_nacimiento"
-          value={cliente.fecha_nacimiento}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>City</label>
-        <input
-          type="text"
-          name="ciudad"
-          value={cliente.ciudad}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          name="correo_electronico"
-          value={cliente.correo_electronico}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Phone</label>
-        <input
-          type="tel"
-          name="telefono"
-          value={cliente.telefono}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <label>Occupation</label>
+      <input
+        type="text"
+        name="numeroDocumento"
+        placeholder="Número de Documento"
+        value={cliente.numeroDocumento}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre"
+        value={cliente.nombre}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="text"
+        name="apellidos"
+        placeholder="Apellidos"
+        value={cliente.apellidos}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="number"
+        name="fechaNacimiento"
+        placeholder="Fecha de Nacimiento"
+        value={cliente.fechaNacimiento}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="text"
+        name="ciudad"
+        placeholder="Ciudad"
+        value={cliente.ciudad}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="email"
+        name="correo_electronico"
+        placeholder="Correo Electrónico"
+        value={cliente.correo_electronico}
+        onChange={handleChange}
+        required
+      />
+      <input
+        type="tel"
+        name="telefono"
+        placeholder="Teléfono"
+        value={cliente.telefono}
+        onChange={handleChange}
+        required
+      />
+       <label>Occupation</label>
         <select
           name="ocupacion"
           value={cliente.ocupacion}
@@ -135,9 +163,8 @@ const ClientForm = () => {
           <option value="Independiente">Independiente</option>
           <option value="Pensionado">Pensionado</option>
         </select>
-      </div>
-      <button type="submit">Submit</button>
-      {!isValid && <p className="error">Client is not in the productive age range.</p>}
+      <button type="submit">Guardar Cliente</button>
+      <p>{message}</p>
     </form>
   );
 };

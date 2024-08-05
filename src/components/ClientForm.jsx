@@ -10,9 +10,9 @@ const ClientForm = () => {
     ciudad: '',
     correoElectronico: '',
     telefono: '',
-    ocupacion: {
-      tipo: ""
-    }, // Asegúrate de que este campo esté inicializado
+      ocupacion: {
+        tipo: ""
+      }, // Asegúrate de que este campo esté inicializado
     estado: '',    // Asegúrate de que este campo esté inicializado
   });
   const [ciudades, setCiudades] = useState([]);

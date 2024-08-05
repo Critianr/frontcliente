@@ -1,6 +1,6 @@
 import { useState } from 'react'
-// import ClientForm from './components/ClientForm';
-import ClientForm from './components/ClientForm2';
+import ClientForm from './components/ClientForm';
+// import ClientForm from './components/ClientForm2';
 
 import './App.css'
 

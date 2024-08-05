@@ -12,14 +12,15 @@ const ClientForm = () => {
     telefono: '',
       ocupacion: {
         tipo: ""
-      }, // Asegúrate de que este campo esté inicializado
-    estado: '',    // Asegúrate de que este campo esté inicializado
+      }, 
+    estado: '', 
   });
   const [ciudades, setCiudades] = useState([]);
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
-    fetch('http://localhost:8080/ciudades')
+    fetch('/ciudades.json') // 
       .then(response => response.json())
       .then(data => setCiudades(data))
       .catch(error => console.error('Error fetching ciudades:', error));
@@ -32,7 +33,10 @@ const ClientForm = () => {
     }));
   };
 
-
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
  const calcularEdad = (fechaNacimiento) => {
    const fecha = new Date(fechaNacimiento);
    const hoy = new Date();
@@ -46,11 +50,15 @@ const ClientForm = () => {
 
  const handleSubmit = (e) => {
   e.preventDefault();
+  let validationErrors = {};
   const edad = calcularEdad(cliente.fechaNacimiento);
   console.log("Edad calculada:", edad); // Para depuración
   // Corrigiendo la lógica de la viabilidad
   const estado = (edad >= 18 && edad <= 65) ? 'viable' : 'no viable';
-
+   // Validaciones
+   if (!validateEmail(cliente.correoElectronico)) {
+    validationErrors.correoElectronico = 'Por favor, ingresa un correo electrónico válido.';
+  }
   const updatedCliente = { ...cliente, estado };
   console.log("Cliente antes de enviar:", updatedCliente); // Para depuración
 
@@ -81,34 +89,7 @@ const ClientForm = () => {
       setMessage('Error al conectar con el servidor.');
     });
 };
-  // const handleSubmit = (e) => {
-    
-  //   e.preventDefault();
-  //   const edad = calcularEdad(cliente.fecha_nacimiento);
 
-  //   const estado = (edad >= 18 && edad <= 65) ? 'viable' : 'no viable';
-  //   const updatedCliente = { ...cliente, estado };
-  //   console.log("Cliente antes de enviar:", updatedCliente); // Para depuración
-
-  //   fetch('http://localhost:8080/api/clientes', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(updatedCliente),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       if (result.success) {
-  //         setMessage('Cliente guardado exitosamente.');
-  //       } else {
-  //         setMessage(`Error: ${result.message}`);
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setMessage('Error al conectar con el servidor.');
-  //     });
-  // };
   return (
     <>
     <div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 
 const ClientForm = () => {
   const [cliente, setCliente] = useState({
@@ -17,6 +17,7 @@ const ClientForm = () => {
   });
   const [ciudades, setCiudades] = useState([]);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
   useEffect(() => {
     fetch('http://localhost:8080/ciudades')
       .then(response => response.json())
@@ -108,81 +109,132 @@ const ClientForm = () => {
   //       setMessage('Error al conectar con el servidor.');
   //     });
   // };
-
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="numeroDocumento"
-        placeholder="Número de Documento"
-        value={cliente.numeroDocumento}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="nombre"
-        placeholder="Nombre"
-        value={cliente.nombre}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="apellidos"
-        placeholder="Apellidos"
-        value={cliente.apellidos}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="date"
-        name="fechaNacimiento"
-        placeholder="Fecha de Nacimiento"
-        value={cliente.fechaNacimiento}
-        onChange={handleChange}
-        required
-      />
-      <div>
-        <label>Ciudad:</label>
-        <select name="ciudad" value={cliente.ciudad} onChange={handleChange} required>
+    <>
+    <div>
+    <h1>PRUEBA PRÁCTICA PARA EL CARGO DE INGENIERO DESARROLLADOR JAVA</h1>
+      <p>Debe realizar una aplicación web que permita realizar las operaciones básicas (CRUD) sobre
+un cliente.</p>
+<p>Adicionalmente se debe crear una funcionalidad que después del registro almacene en base de
+datos si el cliente es viable, el criterio para determinar su viabilidad es que se encuentre en edad
+productiva (entre los 18 y 65 años)</p>
+    
+    </div>
+    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+      <div className="form-group mb-3">
+        <label htmlFor="numeroDocumento">Número de Documento</label>
+        <input
+          type="text"
+          className="form-control"
+          id="numeroDocumento"
+          name="numeroDocumento"
+          placeholder="Número de Documento"
+          value={cliente.numeroDocumento}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="nombre">Nombre</label>
+        <input
+          type="text"
+          className="form-control"
+          id="nombre"
+          name="nombre"
+          placeholder="Nombre"
+          value={cliente.nombre}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="apellidos">Apellidos</label>
+        <input
+          type="text"
+          className="form-control"
+          id="apellidos"
+          name="apellidos"
+          placeholder="Apellidos"
+          value={cliente.apellidos}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
+        <input
+          type="date"
+          className="form-control"
+          id="fechaNacimiento"
+          name="fechaNacimiento"
+          value={cliente.fechaNacimiento}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="ciudad">Ciudad</label>
+        <select 
+          id="ciudad"
+          name="ciudad"
+          className="form-select"
+          value={cliente.ciudad} 
+          onChange={handleChange} 
+          required
+        >
           <option value="">Seleccione una ciudad</option>
           {ciudades.map((ciudad) => (
             <option key={ciudad.nombre} value={ciudad.nombre}>{ciudad.nombre}</option>
           ))}
         </select>
       </div>
-      <input
-        type="text"
-        name="correoElectronico"
-        placeholder="Correo Electrónico"
-        value={cliente.correoElectronico}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="tel"
-        name="telefono"
-        placeholder="Teléfono"
-        value={cliente.telefono}
-        onChange={handleChange}
-        required
-      />
-      <label>Ocupación</label>
-      <select
-        name="ocupacion"
-        value={cliente.ocupacion.tipo}
-        onChange={handleChange}
-        required
-      >
-        <option value="">Seleccione una opción</option>
-        <option value="Empleado">Empleado</option>
-        <option value="Independiente">Independiente</option>
-        <option value="Pensionado">Pensionado</option>
-      </select>
-      <button type="submit">Guardar Cliente</button>
-      <p>{message}</p>
+      <div className="form-group mb-3">
+        <label htmlFor="correoElectronico">Correo Electrónico</label>
+        <input
+          type="email"
+          className="form-control"
+          id="correoElectronico"
+          name="correoElectronico"
+          placeholder="Correo Electrónico"
+          value={cliente.correoElectronico}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="telefono">Teléfono</label>
+        <input
+          type="tel"
+          className="form-control"
+          id="telefono"
+          name="telefono"
+          placeholder="Teléfono"
+          value={cliente.telefono}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="ocupacion">Ocupación</label>
+        <select
+          id="ocupacion"
+          name="ocupacion"
+          className="form-select"
+          value={cliente.ocupacion.tipo}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Seleccione una opción</option>
+          <option value="Empleado">Empleado</option>
+          <option value="Independiente">Independiente</option>
+          <option value="Pensionado">Pensionado</option>
+        </select>
+      </div>
+      <button type="submit" className="btn btn-primary">Guardar Cliente</button>
+      <button type="button" onClick={() => navigate('/lista')}>Ir a clientes</button>
+      <p className="mt-3">{message}</p>
     </form>
+    </>
   );
 };
 

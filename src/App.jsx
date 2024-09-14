@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import ClientForm from './components/ClientForm';
+// import ClientForm from './components/ClientForm';
 import { useNavigate } from 'react-router-dom';
-// import ClientForm from './components/ClientForm2';
+import ClientForm from './components/ClientForm2';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import List from './components/ListClient';
 
